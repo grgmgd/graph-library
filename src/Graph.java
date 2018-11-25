@@ -9,8 +9,11 @@ public class Graph {
     HashMap<String, Vertex> vertices;
     HashMap<String, Edge> edges;
 
-    public Graph() {
+    public Graph(String _strName, String _strVersion) {
+        this._strName = _strName;
+        this._strVersion = _strVersion;
         this.vertices = new HashMap<String, Vertex>();
+        this.edges = new HashMap<String, Edge>();
     }
 
     public String getLibraryName() {
@@ -54,18 +57,13 @@ public class Graph {
     }
 
     public void removeEdge(String strEdgeUniqueID) throws GraphException {
-        for(Vertex v: vertices.values()) { 
-            v.removeEdge(strEdgeUniqueID);
-        }
+        edges.get(strEdgeUniqueID).getVertex1().removeEdge(strEdgeUniqueID);
+        edges.get(strEdgeUniqueID).getVertex2().removeEdge(strEdgeUniqueID);
+        edges.remove(strEdgeUniqueID);
     }
 
     public Vector<Edge> incidentEdges(String strVertexUniqueID) throws GraphException {
-        for (Vertex v : vertices.values()) {
-            if(v.getUniqueID().equals(strVertexUniqueID))
-                return v.getIncidentEdges();
-        }
-
-        return null;
+        return vertices.get(strVertexUniqueID).getIncidentEdges();
     }
 
     public Vector<Vertex> vertices() throws GraphException {

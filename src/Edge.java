@@ -49,9 +49,3 @@ public class Edge {
         return _nEdgeCost;
     }
 }
-
-//really? el card bt3tk eshta8alet Paypal.. de card eh?
-//nice awii w gebto? lesa magebtosh? ohhhhh ok.. law nawy tgeebha kda kda garab
-//maybe .. what? msh same3.. fe 7agat kteera kda btnazel offers 7ilwa
-//i think ah hanam
-//kan fe 7agat mnazelaha a2al mn $48 wait ashuflak
