@@ -3,107 +3,132 @@ import java.util.Vector;
 
 public class Graph {
 
-    String _strName;
-    String _strVersion;
-        
-    HashMap<String, Vertex> vertices;
-    HashMap<String, Edge> edges;
+	String _strName;
+	String _strVersion;
 
-    public Graph(String _strName, String _strVersion) {
-        this._strName = _strName;
-        this._strVersion = _strVersion;
-        this.vertices = new HashMap<String, Vertex>();
-        this.edges = new HashMap<String, Edge>();
-    }
+	HashMap<String, Vertex> vertices;
+	HashMap<String, Edge> edges;
 
-    public String getLibraryName() {
-        return _strName;
-    }
+	public Graph(String _strName, String _strVersion) {
+		this._strName = _strName;
+		this._strVersion = _strVersion;
+		this.vertices = new HashMap<String, Vertex>();
+		this.edges = new HashMap<String, Edge>();
+	}
 
-    public String getLibraryVersion() {
-        return _strVersion;
-    }
+	public String getLibraryName() {
+		return _strName;
+	}
 
-    public void insertVertex(String strUniqueID, String strData, int nX, int nY) throws GraphException {
-        Vertex v = new Vertex(strUniqueID, strData, nX, nY);
-        this.vertices.put(v.getUniqueID(), v);
-    }
+	public String getLibraryVersion() {
+		return _strVersion;
+	}
 
-    public void insertEdge(String strVertex1UniqueID, String strVertex2UniqueID, String strEdgeUniqueID,
-            String strEdgeData, int nEdgeCost) throws GraphException {
-        Edge e = new Edge(strEdgeUniqueID, strEdgeData, nEdgeCost);
-        this.edges.put(e.getUniqueID(), e);
+	public void insertVertex(String strUniqueID, String strData, int nX, int nY) throws GraphException {
+		Vertex v = new Vertex(strUniqueID, strData, nX, nY);
+		this.vertices.put(v.getUniqueID(), v);
+	}
 
-        Vertex v1 = this.vertices.get(strVertex1UniqueID);
-        Vertex v2 = this.vertices.get(strVertex2UniqueID);
+	// ME
+	public void insertVertex(String strUniqueID, String strData) throws GraphException {
+		Vertex v = new Vertex(strUniqueID, strData);
+		this.vertices.put(v.getUniqueID(), v);
+	}
 
-        v1.insertEdge(e);
-        v2.insertEdge(e);
+	public void insertEdge(String strVertex1UniqueID, String strVertex2UniqueID, String strEdgeUniqueID,
+			String strEdgeData, int nEdgeCost) throws GraphException {
+		Edge e = new Edge(strEdgeUniqueID, strEdgeData, nEdgeCost);
+		this.edges.put(e.getUniqueID(), e);
 
-        e.connectVertex1(v1);
-        e.connectVertex2(v2);
-    }
+		Vertex v1 = this.vertices.get(strVertex1UniqueID);
+		Vertex v2 = this.vertices.get(strVertex2UniqueID);
 
-    public void removeVertex(String strVertexUniqueID) throws GraphException {
+		v1.insertEdge(e);
+		v2.insertEdge(e);
 
-        Vertex v = this.vertices.get(strVertexUniqueID);
-        Vector<Edge> edges = v.getIncidentEdges();
+		e.connectVertex1(v1);
+		e.connectVertex2(v2);
+	}
 
-        for(Edge e: edges) {
-            removeEdge(e._strUniqueID);
-        }
-    
-        this.vertices.remove(strVertexUniqueID);
-    }
+	public void removeVertex(String strVertexUniqueID) throws GraphException {
 
-    public void removeEdge(String strEdgeUniqueID) throws GraphException {
-        edges.get(strEdgeUniqueID).getVertex1().removeEdge(strEdgeUniqueID);
-        edges.get(strEdgeUniqueID).getVertex2().removeEdge(strEdgeUniqueID);
-        edges.remove(strEdgeUniqueID);
-    }
+		Vertex v = this.vertices.get(strVertexUniqueID);
+		Vector<Edge> edges = v.getIncidentEdges();
 
-    public Vector<Edge> incidentEdges(String strVertexUniqueID) throws GraphException {
-        return vertices.get(strVertexUniqueID).getIncidentEdges();
-    }
+		for (Edge e : edges) {
+			removeEdge(e._strUniqueID);
+		}
 
-    public Vector<Vertex> vertices() throws GraphException {
-        Vector<Vertex> vertices = new Vector<Vertex>();
+		this.vertices.remove(strVertexUniqueID);
+	}
 
-        for(Vertex v: this.vertices.values()) {
-            vertices.add(v);
-        }
+	public void removeEdge(String strEdgeUniqueID) throws GraphException {
+		edges.get(strEdgeUniqueID).getVertex1().removeEdge(strEdgeUniqueID);
+		edges.get(strEdgeUniqueID).getVertex2().removeEdge(strEdgeUniqueID);
+		edges.remove(strEdgeUniqueID);
+	}
 
-        return vertices;
-    }
+	public Vector<Edge> incidentEdges(String strVertexUniqueID) throws GraphException {
+		return vertices.get(strVertexUniqueID).getIncidentEdges();
+	}
 
-    public Vector<Edge> edges() throws GraphException {
-        Vector<Edge> edges = new Vector<Edge>();
+	public Vector<Vertex> vertices() throws GraphException {
+		Vector<Vertex> vertices = new Vector<Vertex>();
 
-        for (Edge v : this.edges.values()) {
-            edges.add(v);
-        }
+		for (Vertex v : this.vertices.values()) {
+			vertices.add(v);
+		}
 
-        return edges;
-    }
+		return vertices;
+	}
 
-    public Vertex[] endVertices(String strEdgeUniqueID) throws GraphException {
-        Edge e = this.edges.get(strEdgeUniqueID);
-        
-        Vertex[] vertices = new Vertex[2];
-        vertices[0] = e.getVertex1();
-        vertices[1] = e.getVertex2();
+	public Vector<Edge> edges() throws GraphException {
+		Vector<Edge> edges = new Vector<Edge>();
 
-        return vertices; 
-    }
+		for (Edge v : this.edges.values()) {
+			edges.add(v);
+		}
 
-    public Vertex opposite(String strVertexUniqueID, String strEdgeUniqueID) throws GraphException {
-        Vertex v = this.vertices.get(strVertexUniqueID);
-        Edge e = v.getEdge(strEdgeUniqueID);
+		return edges;
+	}
 
-        return (e.getVertex1().getUniqueID().equals(strVertexUniqueID))? e.getVertex2() : e.getVertex1();
-    }
-    
-    public static void main(String[] args) {
-        System.out.println("Test");
-    }
+	public Vertex[] endVertices(String strEdgeUniqueID) throws GraphException {
+		Edge e = this.edges.get(strEdgeUniqueID);
+
+		Vertex[] vertices = new Vertex[2];
+		vertices[0] = e.getVertex1();
+		vertices[1] = e.getVertex2();
+
+		return vertices;
+	}
+
+	public Vertex opposite(String strVertexUniqueID, String strEdgeUniqueID) throws GraphException {
+		Vertex v = this.vertices.get(strVertexUniqueID);
+		Edge e = v.getEdge(strEdgeUniqueID);
+
+		return (e.getVertex1().getUniqueID().equals(strVertexUniqueID)) ? e.getVertex2() : e.getVertex1();
+	}
+
+	// ZEYAD
+	public void dfs(String strStartVertexUniqueID, Visitor visitor) throws GraphException {
+		Vertex v = this.vertices.get(strStartVertexUniqueID);
+		v.setLabel("VISITED");
+		visitor.visit(v);
+		for (Edge e : v.getIncidentEdges()) {
+			if (e.getLabel().equals("UNEXPLORED")) {
+				visitor.visit(e);
+				Vertex w = opposite(v.getUniqueID(), e.getUniqueID());
+				if (w.getLabel().equals("UNEXPLORED")) {
+					e.setLabel("DISCOVERY");
+					dfs(w.getUniqueID(), visitor);
+				} else {
+					e.setLabel("BACK");
+				}
+			}
+		}
+	}
+
+	public static void main(String[] args) {
+
+	}
 }
