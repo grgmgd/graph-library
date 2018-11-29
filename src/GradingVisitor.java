@@ -8,7 +8,7 @@ public class GradingVisitor implements Visitor {
 	}
 
 	public void visit(Edge e) {
-		_strResult += "e=" + e.getUniqueID() + " ";
+		_strResult += "e=" + e.getCost() + " ";
 	}
 
 	public String getResult() {

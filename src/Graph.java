@@ -1,4 +1,5 @@
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Vector;
 
 public class Graph {
@@ -127,6 +128,29 @@ public class Graph {
 			}
 		}
 	}
+	
+    public void bfs(String strStartVertexUniqueID, Visitor visitor) throws GraphException{
+    	LinkedList<Vertex> vertices = new LinkedList<Vertex>();
+    	Vertex vertex = this.vertices.get(strStartVertexUniqueID);
+    	_bfs(strStartVertexUniqueID, visitor, vertex , vertices);
+    	while(!vertices.isEmpty()) {
+    		Vertex v = vertices.removeFirst();
+    		if(v.getLabel().equals("UNEXPLORED")) {
+    			_bfs(v.getUniqueID(), visitor, v, vertices);
+    		}
+    	}	
+    }
+    
+    private void _bfs(String strVertexUniqueID, Visitor visitor, Vertex v, LinkedList<Vertex> vertices) throws GraphException {
+    	visitor.visit(v);
+    	v.setLabel("VISITED");
+    	for( Edge e : v.getIncidentEdges()) {
+    		if(e.getLabel().equals("UNEXPLORED")) {
+    			visitor.visit(e);
+    			vertices.add(this.opposite(strVertexUniqueID, e.getUniqueID()));
+    		}
+    	}	
+    }
 
 	public static void main(String[] args) {
 
