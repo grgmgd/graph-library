@@ -1,10 +1,14 @@
 import java.util.HashMap;
+import java.util.Stack;
 import java.util.Vector;
 
 public class Graph {
 
     String _strName;
     String _strVersion;
+    Stack helper = new Stack<PathSegment>();
+	Vector vivi = new Vector<PathSegment>();
+	boolean flag = false;
 
     HashMap<String, Vertex> vertices;
     HashMap<String, Edge> edges;
@@ -203,6 +207,72 @@ public class Graph {
     static double distance(int x1, int y1, int x2, int y2) {
         return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
     }
+    
+ // ZEYAD
+ 	public void dfs(String strStartVertexUniqueID, Visitor visitor)
+ 			throws GraphException {
+ 		Vertex v = this.vertices.get(strStartVertexUniqueID);
+ 		v.setLabel("VISITED");
+ 		visitor.visit(v);
+ 		for (Edge e : v.getIncidentEdges()) {
+ 			if (e.getLabel().equals("UNEXPLORED")) {
+ 				visitor.visit(e);
+ 				Vertex w = opposite(v.getUniqueID(), e.getUniqueID());
+ 				if (w.getLabel().equals("UNEXPLORED")) {
+ 					e.setLabel("DISCOVERY");
+ 					dfs(w.getUniqueID(), visitor);
+ 				} else {
+ 					e.setLabel("BACK");
+ 				}
+ 			}
+ 		}
+ 	}
+    
+	public Vector<PathSegment> pathDFS(String strStartVertexUniqueID,
+			String strEndVertexUniqueID) throws GraphException {
+
+		Vertex v = this.vertices.get(strStartVertexUniqueID);
+		v.setLabel("VISTED");
+		// System.out.println(v);
+		helper.push(v);
+		// System.out.println(helper);
+
+		if (strStartVertexUniqueID == strEndVertexUniqueID) {
+			flag = true;
+			while (!(helper.isEmpty())) {
+				if (helper.peek() instanceof Vertex) {
+					System.out.println(((Vertex) (helper.peek()))._strUniqueID
+							+ " vertex ");
+				} else
+					System.out.println(((Edge) (helper.peek())).getCost()
+							+ "  edge ");
+				vivi.add(helper.pop());
+			}
+
+		}
+
+		for (Edge e : v.getIncidentEdges()) {
+			if (e.getLabel() == "UNEXPLORED") {
+				Vertex w = opposite(v.getUniqueID(), e.getUniqueID());
+				if (w.getLabel() == "UNEXPLORED") {
+					e.setLabel("DISCOVERY");
+					helper.push(e);
+					pathDFS(w.getUniqueID(), strEndVertexUniqueID);
+//					if (!helper.isEmpty() && !flag)
+//					 helper.pop();       
+				} else {
+					e.setLabel("BACK");
+				}
+			}
+			if (!helper.isEmpty() && !flag) {
+//				helper.pop();
+			}
+		}
+
+		return vivi;
+
+	}
+
 
     public static void main(String[] args) throws GraphException {
 
