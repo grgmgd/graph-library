@@ -2,15 +2,16 @@ public class Edge {
 
     protected String _strUniqueID, _strData;
     protected int _nEdgeCost;
+    protected String _strLabel;
 
     protected Vertex _vertex1;
     protected Vertex _vertex2;
 
-    public Edge(String _strUniqueID, String _strEdgeData,
-            int _nEdgeCost) {
+    public Edge(String _strUniqueID, String _strEdgeData, int _nEdgeCost) {
         this._strUniqueID = _strUniqueID;
         this._strData = _strEdgeData;
         this._nEdgeCost = _nEdgeCost;
+        this._strLabel = "UNEXPLORED";
     }
 
     public void connectVertex1(Vertex v) {
@@ -48,4 +49,12 @@ public class Edge {
     public int getCost() {
         return _nEdgeCost;
     }
+    
+    public String getLabel() {
+		return _strLabel;
+	}
+
+	public void setLabel(String _strLabel) {
+		this._strLabel = _strLabel;
+	}
 }

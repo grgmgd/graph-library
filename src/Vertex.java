@@ -5,7 +5,7 @@ public class Vertex {
 
     protected String _strUniqueID, _strData;
     protected int _nX, _nY;
-
+    protected String _strLabel;
     protected HashMap<String, Edge> incidentEdges;
     
     public Vertex(String _strUniqueID, String _strData, int _nX, int _nY){
@@ -14,7 +14,16 @@ public class Vertex {
         this._nY = _nY;
         this._nX = _nX;
         this.incidentEdges = new HashMap<String, Edge>();
+        this._strLabel = "UNEXPLORED";
     }
+    
+    // ZEYAD
+ 	public Vertex(String _strUniqueID, String _strData) {
+ 		this._strData = _strData;
+ 		this._strUniqueID = _strUniqueID;
+ 		this.incidentEdges = new HashMap<String, Edge>();
+ 		this._strLabel = "UNEXPLORED";
+ 	}
 
     public void insertEdge(Edge edge) {
         this.incidentEdges.put(edge._strUniqueID, edge);
@@ -53,5 +62,13 @@ public class Vertex {
     public int getY() {
         return _nY;
     }
+    
+    public String getLabel() {
+		return _strLabel;
+	}
+
+	public void setLabel(String _strLabel) {
+		this._strLabel = _strLabel;
+	}
 
 }
