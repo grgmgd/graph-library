@@ -3,67 +3,66 @@ import java.util.Vector;
 
 public class Vertex {
 
-	protected String _strUniqueID, _strData;
-	protected int _nX, _nY;
-	protected String _strLabel;
-	protected HashMap<String, Edge> incidentEdges;
+    protected String _strUniqueID, _strData;
+    protected int _nX, _nY;
+    protected String _strLabel;
+    protected HashMap<String, Edge> incidentEdges;
+    
+    public Vertex(String _strUniqueID, String _strData, int _nX, int _nY){
+        this._strData = _strData;
+        this._strUniqueID = _strUniqueID;
+        this._nY = _nY;
+        this._nX = _nX;
+        this.incidentEdges = new HashMap<String, Edge>();
+        this._strLabel = "UNEXPLORED";
+    }
+    
+ 	public Vertex(String _strUniqueID, String _strData) {
+ 		this._strData = _strData;
+ 		this._strUniqueID = _strUniqueID;
+ 		this.incidentEdges = new HashMap<String, Edge>();
+ 		this._strLabel = "UNEXPLORED";
+ 	}
 
-	public Vertex(String _strUniqueID, String _strData, int _nX, int _nY) {
-		this._strData = _strData;
-		this._strUniqueID = _strUniqueID;
-		this._nY = _nY;
-		this._nX = _nX;
-		this.incidentEdges = new HashMap<String, Edge>();
-		this._strLabel = "UNEXPLORED";
-	}
+    public void insertEdge(Edge edge) {
+        this.incidentEdges.put(edge._strUniqueID, edge);
+    }
 
-	// ZEYAD
-	public Vertex(String _strUniqueID, String _strData) {
-		this._strData = _strData;
-		this._strUniqueID = _strUniqueID;
-		this.incidentEdges = new HashMap<String, Edge>();
-		this._strLabel = "UNEXPLORED";
-	}
+    public void removeEdge(String strEdgeUniqueID) {
+        this.incidentEdges.remove(strEdgeUniqueID);
+    }
 
-	public void insertEdge(Edge edge) {
-		this.incidentEdges.put(edge._strUniqueID, edge);
-	}
+    public Edge getEdge(String strEdgeUniqueID) {
+        return this.incidentEdges.get(strEdgeUniqueID);
+    }
 
-	public void removeEdge(String strEdgeUniqueID) {
-		this.incidentEdges.remove(strEdgeUniqueID);
-	}
+    public Vector<Edge> getIncidentEdges() {
+        Vector<Edge> edges= new Vector<Edge>();
 
-	public Edge getEdge(String strEdgeUniqueID) {
-		return this.incidentEdges.get(strEdgeUniqueID);
-	}
+        for(Edge e: incidentEdges.values()) {
+            edges.add(e);
+        }
 
-	public Vector<Edge> getIncidentEdges() {
-		Vector<Edge> edges = new Vector<Edge>();
+        return edges;
+    }
 
-		for (Edge e : incidentEdges.values()) {
-			edges.add(e);
-		}
+    public String getUniqueID() {
+        return _strUniqueID;
+    }
 
-		return edges;
-	}
+    public String getData() {
+        return _strData;
+    }
 
-	public String getUniqueID() {
-		return _strUniqueID;
-	}
+    public int getX() {
+        return _nX;
+    }
 
-	public String getData() {
-		return _strData;
-	}
-
-	public int getX() {
-		return _nX;
-	}
-
-	public int getY() {
-		return _nY;
-	}
-
-	public String getLabel() {
+    public int getY() {
+        return _nY;
+    }
+    
+    public String getLabel() {
 		return _strLabel;
 	}
 
