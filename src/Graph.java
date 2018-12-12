@@ -384,5 +384,7 @@ public class Graph {
 		g.insertEdge("3", "5", "g", "g", 34);
 
 		Vector<Vector<PathSegment>> paths = g.findAllShortestPathsFW();
+
+		System.out.println("working");
     }
 }
