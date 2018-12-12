@@ -30,6 +30,15 @@ public class Edge {
         return _vertex2;
     }
 
+    public Vertex getOpposite(Vertex v) {
+        if(v.getUniqueID().equals(_vertex1.getUniqueID()))
+            return _vertex2;
+        if(v.getUniqueID().equals(_vertex2.getUniqueID()))
+            return _vertex1;
+        else 
+            return null;
+    }
+
     public void disconnectVertex1() {
         this._vertex1 = null;
     }

@@ -295,24 +295,94 @@ public class Graph {
 		}
 
 		return vivi;
-
 	}
 
-    public static void main(String[] args) throws GraphException {
+	public Vector<Vector<PathSegment>> findAllShortestPathsFW() throws GraphException, CloneNotSupportedException {
+		Vertex[] vertices = this.vertices.values().toArray(new Vertex[this.vertices.size()]);
 
-        Graph testClosePoints = new Graph("George", "1.0");
-        testClosePoints.insertVertex("0", "A", 0, 0);
-        testClosePoints.insertVertex("1", "B", 1, 2);
-        testClosePoints.insertVertex("2", "C", 2, 7);
-        testClosePoints.insertVertex("3", "D", 3, 0);
-        testClosePoints.insertVertex("4", "E", 2, 5);
-        testClosePoints.insertVertex("5", "F", 3, 5);
-        testClosePoints.insertVertex("6", "G", 4, 2);
-        testClosePoints.insertVertex("7", "H", 5, 6);
-        testClosePoints.insertVertex("8", "I", 6, 5);
-        testClosePoints.insertVertex("9", "J", 7, 7);
+		WeightedPath[][] matrix = new WeightedPath[vertices.length][vertices.length];
 
-        System.out.println(testClosePoints.closestPair()[0].getX() + "," + testClosePoints.closestPair()[0].getY()
-                + " and " + testClosePoints.closestPair()[1].getX() + "," + testClosePoints.closestPair()[1].getY());
+		Vector<Vector<PathSegment>> resultMatrix = new Vector<Vector<PathSegment>>();
+
+		//add the direct connections and vertices zeros first!
+		for(int i = 0; i < vertices.length; i++) {
+
+			WeightedPath step = new WeightedPath();
+			step.pushStep(new PathSegment(vertices[i], null));
+			matrix[i][i] = step;
+
+			for(int j = 0; j < vertices.length; j++) {
+				Vector<Edge> edges = vertices[i].getIncidentEdges();
+				for(int k = 0; k < edges.size(); k++) {
+					if(edges.get(k).getOpposite(vertices[i]).getUniqueID().equals(vertices[j].getUniqueID())) {
+						WeightedPath path = new WeightedPath();
+						PathSegment s1 = new PathSegment(vertices[i], edges.get(k));
+						PathSegment s2 = new PathSegment(vertices[j], null);
+
+						path.pushStep(s1);
+						path.pushStep(s2);
+
+						matrix[i][j] = path;
+					}
+				}
+			}
+		}
+		
+		for(int k = 0; k < vertices.length; k++) {
+			for (int i = 0; i < vertices.length; i++) {
+				for (int j = 0; j < vertices.length; j++) {
+
+					if(matrix[i][k] != null && matrix[k][j] != null) {
+
+						if(matrix[i][j] == null) {
+							WeightedPath p1 = (WeightedPath) matrix[i][k];
+							WeightedPath p2 = (WeightedPath) matrix[k][j];
+
+							WeightedPath path = new WeightedPath(p1.getPath(), p2.getPath());
+
+							matrix[i][j] = path;
+						} else {
+						if (matrix[i][j] != null
+									&& matrix[i][k].getWeight() + matrix[k][j].getWeight() < matrix[i][j].getWeight()) {
+								WeightedPath p1 = (WeightedPath) matrix[i][k];
+								WeightedPath p2 = (WeightedPath) matrix[k][j];
+
+								WeightedPath path = new WeightedPath(p1.getPath(), p2.getPath());
+
+								matrix[i][j] = path;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		for (int i = 0; i < matrix.length; i++) {
+			for (int j = 0; j < matrix[i].length; j++) { 
+				resultMatrix.add(matrix[i][j].getPath());
+			}
+		}
+
+		return resultMatrix;
+	}
+
+    public static void main(String[] args) throws GraphException, CloneNotSupportedException {
+
+        Graph g = new Graph("George", "1.0");
+		g.insertVertex("1", "1");
+		g.insertVertex("2", "2");
+		g.insertVertex("3", "3");
+		g.insertVertex("4", "4");
+		g.insertVertex("5", "5");
+
+		g.insertEdge("1", "4", "a", "a", 5);
+		g.insertEdge("1", "2", "b", "b", 2);
+		g.insertEdge("2", "3", "c", "c", 14);
+		g.insertEdge("2", "4", "d", "d", 5);
+		g.insertEdge("2", "5", "e", "e", 4);
+		g.insertEdge("4", "5", "f", "f", 58);
+		g.insertEdge("3", "5", "g", "g", 34);
+
+		Vector<Vector<PathSegment>> paths = g.findAllShortestPathsFW();
     }
 }
