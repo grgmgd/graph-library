@@ -1,5 +1,5 @@
 public class PathSegment {
-    protected Vertex _vertex; 
+    protected Vertex _vertex;
     protected Edge _edge;
 
     public PathSegment(Vertex v, Edge e) {

@@ -23,11 +23,20 @@ public class WeightedPath{
         this.weight = 0;
     }
 
+    public WeightedPath(int weight) {
+        this.path = new Vector<PathSegment>();
+        this.weight = weight;
+    }
+
     public void pushStep(PathSegment step) {
         this.path.add(step);
 
         if(step.getEdge() != null)
             this.weight += step.getEdge().getCost(); 
+    }
+    
+    public void addStep(PathSegment step) {
+        this.path.add(step);
     }
 
     public Vector<PathSegment> getPath() {
@@ -36,6 +45,14 @@ public class WeightedPath{
 
     public int getWeight() {
         return this.weight;
+    }
+    
+    public void setWeight(int weight) {
+    	this.weight = weight;
+    }
+    
+    public void setPath(Vector<PathSegment> p) {
+    	this.path = p;
     }
 
     public void printPath() {
