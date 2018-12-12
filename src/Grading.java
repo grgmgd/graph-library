@@ -16,8 +16,9 @@ public class Grading {
 		g.insertEdge("2", "5", "4", "4", 4);
 		g.insertEdge("4", "5", "58", "58", 58);
 		g.insertEdge("3", "5", "34", "34", 34);
-		g.bfs("1", gVisitor);
-		g.dfs("1", gVisitor);
+		g.findShortestPathBF("1");
+		System.out.println();
+//		g.dfs("1", gVisitor);
 		if(gVisitor.getResult().equalsIgnoreCase("blah"))
 			nMark += 12;
 		System.out.println(gVisitor.getResult());

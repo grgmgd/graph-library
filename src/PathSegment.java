@@ -2,6 +2,11 @@ public class PathSegment {
     protected Vertex _vertex; 
     protected Edge _edge;
 
+    public PathSegment(Vertex v, Edge e) {
+    	this._vertex = v;
+    	this._edge = e;
+    }
+    
     public Vertex getVertex() {
         return _vertex;
     }
