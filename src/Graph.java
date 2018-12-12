@@ -299,7 +299,7 @@ public class Graph {
 
 	}
 
-	public void findShortestPathBF(String strStartVertexUniqueID) throws GraphException {
+	public Vector<Vector<PathSegment>> findShortestPathBF(String strStartVertexUniqueID) throws GraphException {
 		int verticesCount = this.vertices.size();
 		Vertex src = this.vertices.get(strStartVertexUniqueID);
 		Hashtable<String, WeightedPath> segmentTable = new Hashtable<String, WeightedPath>();
@@ -313,21 +313,25 @@ public class Graph {
 		for (Edge e : src.getIncidentEdges()) {
 			vertices.add(this.opposite(strStartVertexUniqueID, e.getUniqueID()));
 		}
-		LinkedList<PathSegment> path = null;
 		int weight = 0;
 		for(Vertex vt : this.vertices.values()) {
 			for(Edge e : vt.getIncidentEdges()) {
 				Vertex u = vt;
 				Vertex v = opposite(u.getUniqueID(), e.getUniqueID());
 				int weightTemp = e.getCost();
-				if (segmentTable.get(u.getUniqueID()).getWeight() != Integer.MAX_VALUE && segmentTable.get(u.getUniqueID()).getWeight() + weightTemp < segmentTable.get(v.getUniqueID()).getWeight())  
-					segmentTable.get(v.getUniqueID()).pushStep(new PathSegment(u, e));
+				if (segmentTable.get(u.getUniqueID()).getWeight() != Integer.MAX_VALUE && segmentTable.get(u.getUniqueID()).getWeight() + weightTemp < segmentTable.get(v.getUniqueID()).getWeight()) {
+					segmentTable.replace(v.getUniqueID(), new WeightedPath(segmentTable.get(u.getUniqueID()).getPath(), segmentTable.get(v.getUniqueID()).getPath()));
+					segmentTable.get(v.getUniqueID()).addStep(new PathSegment(u, e));
+					segmentTable.get(v.getUniqueID()).setWeight(segmentTable.get(u.getUniqueID()).getWeight() + weightTemp);
+				}
 			}
 		}
-		Set<String> keys = segmentTable.keySet();
-		for( String key : keys ) {
-			System.out.printf("key: %s, weight: %d \n", key, segmentTable.get(key).getWeight());
-		}
+        Set<String> keys = segmentTable.keySet();
+        Vector<Vector<PathSegment>> shortestPath = new Vector<Vector<PathSegment>>();
+        for(String key: keys){
+            shortestPath.add(segmentTable.get(key).getPath());
+        }
+        return shortestPath;
 	}
 
 
