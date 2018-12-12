@@ -1,4 +1,7 @@
 import java.util.Arrays;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.LinkedList;
@@ -239,7 +242,6 @@ public class Graph {
 		return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
 	}
 
-	// ZEYAD
 	public void dfs(String strStartVertexUniqueID, Visitor visitor) throws GraphException {
 		Vertex v = this.vertices.get(strStartVertexUniqueID);
 		v.setLabel("VISITED");
@@ -365,6 +367,120 @@ public class Graph {
 		}
 
 		return resultMatrix;
+	}
+
+	public Vector<PathSegment> minSpanningTree() throws GraphException {
+		Vector<PathSegment> result = new Vector<>();
+		String[][] cycle = new String[this.vertices().size()][2];
+		String[][] diffCycles = new String[100][2];
+		int pos = 0;
+		int num = 0;
+		for (int i = 0; i < cycle.length; i++) {
+			cycle[i][0] = this.vertices().get(i).getUniqueID();
+			cycle[i][1] = "" + num;
+		}
+		for (int i = 0; i < diffCycles.length; i++) {
+			diffCycles[i][0] = "";
+			diffCycles[i][1] = "";
+		}
+		// diffCycles[pos][0] = "3";
+		// diffCycles[pos][1] = "2";
+		// pos++;
+
+		for (int i = 0; i < this.edges().size(); i++) {
+			int min = 2147483647; // Maximum integer value..
+			String id = "";
+			for (int j = 0; j < this.edges().size(); j++) {
+				Edge e = this.edges().get(j);
+				if (e.getCost() < min && e.getLabel() != "TAKEN") {
+					min = e.getCost();
+					id = e.getUniqueID();
+				}
+			}
+
+			Edge e = this.edges.get(id);
+			if (e.getLabel() != "TAKEN") {
+				e.setLabel("TAKEN");
+				String cycle1 = "";
+				String cycle2 = "";
+				for (int k = 0; k < cycle.length; k++) {
+					if (e.getVertex1().getUniqueID() == cycle[k][0]) {
+						cycle1 = cycle[k][1];
+					} else if (e.getVertex2().getUniqueID() == cycle[k][0])
+						cycle2 = cycle[k][1];
+				}
+
+				if (!cycle1.equals("0")) {
+					if (!cycle2.equals("0")) {
+						boolean pass = true;
+						for (int k = 0; k < diffCycles.length; k++) {
+							if ((cycle1.equals(diffCycles[k][0]) && cycle2.equals(diffCycles[k][1]))
+									|| (cycle2.equals(diffCycles[k][0]) && cycle1.equals(diffCycles[k][1]))) {
+								pass = false;
+							}
+						}
+						if (!cycle1.equals(cycle2) && pass) {
+							PathSegment p = new PathSegment();
+							p._edge = e;
+							result.add(p);
+							diffCycles[pos][0] = cycle1;
+							diffCycles[pos][1] = cycle2;
+							pos++;
+							for (int k = 0; k < diffCycles.length; k++) {
+								if (diffCycles[k][0].equals(cycle1) && !diffCycles[k][1].equals(cycle2)) {
+									diffCycles[pos][0] = diffCycles[k][1];
+									diffCycles[pos][1] = cycle2;
+									pos++;
+								} else if (!diffCycles[k][0].equals(cycle1) && diffCycles[k][1].equals(cycle2)) {
+									System.out.println(pos);
+									diffCycles[pos][0] = diffCycles[k][0];
+									diffCycles[pos][1] = cycle1;
+									pos++;
+								}
+
+							}
+							// for (int z = 0; z < pos; z++) {
+							// System.out.println("diff contains: " + diffCycles[z][0] + " + " +
+							// diffCycles[z][1]);
+							// }
+							// System.out.println("EDGE with cycle1 != 0 and cycle2 != 0: " + e.getCost());
+						}
+					} else {
+						for (int k = 0; k < cycle.length; k++) {
+							if (e.getVertex2().getUniqueID().equals(cycle[k][0]))
+								cycle[k][1] = cycle1;
+						}
+						PathSegment p = new PathSegment();
+						p._edge = e;
+						result.add(p);
+						// System.out.println("EDGE with cycle1 != 0 and cycle2 = 0: " + e.getCost());
+					}
+				} else if (!cycle2.equals("0")) {
+					for (int k = 0; k < cycle.length; k++) {
+						if (e.getVertex1().getUniqueID().equals(cycle[k][0]))
+							cycle[k][1] = cycle2;
+					}
+					PathSegment p = new PathSegment();
+					p._edge = e;
+					result.add(p);
+					// System.out.println("EDGE with cycle1 = 0 and cycle2 != 0: " + e.getCost());
+				} else {
+					num++;
+					for (int k = 0; k < cycle.length; k++) {
+						if (e.getVertex1().getUniqueID().equals(cycle[k][0]))
+							cycle[k][1] = "" + num;
+						else if (e.getVertex2().getUniqueID().equals(cycle[k][0]))
+							cycle[k][1] = "" + num;
+					}
+					PathSegment p = new PathSegment();
+					p._edge = e;
+					result.add(p);
+					// System.out.println("EDGE with cycle1 = 0 and cycle2 = 0: " + e.getCost());
+				}
+
+			}
+		}
+		return result;
 	}
 
 	public Vector<Vector<PathSegment>> findShortestPathBF(String strStartVertexUniqueID) throws GraphException {
